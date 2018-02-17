@@ -8,6 +8,7 @@
       "root": "src",
       "outDir": "dist",
       "assets": [
+        "api",
         "assets",
         "favicon.ico"
       ],
@@ -19,6 +20,8 @@
       "testTsconfig": "tsconfig.spec.json",
       "prefix": "ts",
       "styles": [
+        "../node_modules/purecss/build/pure.css",
+        "../node_modules/purecss/build/grids-responsive.css",
         "styles.css"
       ],
       "scripts": [],

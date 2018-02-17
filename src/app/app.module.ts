@@ -1,5 +1,6 @@
 import {BrowserModule} from '@angular/platform-browser';
 import {NgModule} from '@angular/core';
+import {HttpModule} from '@angular/http';
 
 import {FormModule} from './form/form.module';
 import {WidgetModule} from './widget/widget.module';
@@ -14,6 +15,7 @@ import {AppComponent} from './app.component';
   ],
   imports: [
     BrowserModule,
+    HttpModule,
     FormModule,
     WidgetModule
   ],
