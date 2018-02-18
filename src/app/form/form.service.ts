@@ -20,10 +20,14 @@ export class FormService {
   cheapest = {};
   fastest = {};
 
-  private init() {
+  private getDeals(): Promise<Deal[]> {
     return this.http.get(DEALS_URL)
       .map(response => <Deal[]>response.json().deals)
-      .toPromise()
+      .toPromise();
+  }
+
+  private init() {
+    return this.getDeals()
       .then(deals => {
         this.extractDepartures(deals);
         this.extractArrivals(deals);
@@ -51,7 +55,7 @@ export class FormService {
       this.baseMap[departure][arrival].push(deal);
     }
 
-    console.log(this.baseMap);
+    // console.log(this.baseMap);
   }
 
   private calcDuration(duration: Duration): number {
@@ -91,8 +95,8 @@ export class FormService {
       param = DURATION;
     }
 
-    console.log(departure, arrival, type);
-    console.log(optimal, param);
+    // console.log(departure, arrival, type);
+    // console.log(optimal, param);
 
     return new Promise((resolve, reject) => {
       if (optimal[departure] && optimal[departure][arrival]) {

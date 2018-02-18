@@ -47,6 +47,7 @@ export class FormComponent implements OnInit {
 
   resetDeals() {
     this.deals = null;
-    this.formInputComponent.resetForm();
+    // Reset form if needed
+    // this.formInputComponent.resetForm();
   }
 }

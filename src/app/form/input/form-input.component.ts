@@ -45,13 +45,13 @@ export class FormInputComponent implements OnInit {
 
     if (this.isSubmitting) { return; }
 
-    console.log(this.departure, this.arrival, this.type);
+    // console.log(this.departure, this.arrival, this.type);
 
     this.isSubmitting = true;
     this.formService.search(this.departure, this.arrival, this.type)
       .then(response => <Deal[]>response)
       .then(response => {
-        console.log(response);
+        // console.log(response);
         this.onFormResult.emit(response);
         this.isSubmitting = false;
       });
