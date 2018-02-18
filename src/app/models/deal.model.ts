@@ -5,7 +5,9 @@ export class Deal {
   departure: string;
   arrival: string;
   duration: Duration;
+  _duration: number;
   cost: number;
+  _cost: number;
   discount: number;
   reference: String;
 }

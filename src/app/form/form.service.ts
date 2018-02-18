@@ -5,6 +5,7 @@ import 'rxjs/add/operator/toPromise';
 import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
+import {CHEAPEST, FASTEST, COST, DURATION, DEALS_URL} from './form.constants';
 import {Deal, Duration} from '../models';
 
 @Injectable()
@@ -13,19 +14,17 @@ export class FormService {
   constructor(private http: Http) {
   }
 
-  deals: Deal[];
   departures: Set<string>;
   arrivals: Set<string>;
   baseMap = {};
   cheapest = {};
   fastest = {};
 
-  init() {
-    return this.http.get('api/deals.json')
+  private init() {
+    return this.http.get(DEALS_URL)
       .map(response => <Deal[]>response.json().deals)
       .toPromise()
       .then(deals => {
-        this.extractDeals(deals);
         this.extractDepartures(deals);
         this.extractArrivals(deals);
         this.buildBaseMap(deals);
@@ -33,8 +32,11 @@ export class FormService {
       .catch(this.handleError);
   }
 
-  buildBaseMap(deals: Deal[]) {
+  private buildBaseMap(deals: Deal[]) {
     for (const deal of deals) {
+      deal[DURATION] = this.calcDuration(deal.duration);
+      deal[COST] = this.calcCost(deal.cost, deal.discount);
+
       const departure = deal.departure;
       const arrival = deal.arrival;
 
@@ -48,30 +50,23 @@ export class FormService {
 
       this.baseMap[departure][arrival].push(deal);
     }
+
+    console.log(this.baseMap);
   }
 
-  extractDeals(deals: Deal[]) {
-    this.deals = deals.map(deal => {
-      deal.duration = this.calcDuration(deal.duration);
-      deal.cost = this.calcCost(deal.cost, deal.discount);
-      return deal;
-    });
+  private calcDuration(duration: Duration): number {
+    return 60 * Number(duration.h) + Number(duration.m);
   }
 
-  calcDuration(duration: Duration): Duration {
-    duration.d = 60 * Number(duration.h) + Number(duration.m);
-    return duration;
+  private calcCost(baseCost: number, discount: number): number {
+    return baseCost * (100 - discount) / 100;
   }
 
-  calcCost(baseCost: number, discount: number): number {
-    return (discount > 0 ? (baseCost * discount) / 100 : baseCost);
-  }
-
-  extractDepartures(deals: Deal[]) {
+  private extractDepartures(deals: Deal[]) {
     this.arrivals = new Set(deals.map(deal => deal.arrival));
   }
 
-  extractArrivals(deals: Deal[]) {
+  private extractArrivals(deals: Deal[]) {
     this.departures = new Set(deals.map(deal => deal.departure));
   }
 
@@ -85,53 +80,73 @@ export class FormService {
       });
   }
 
-  search(departure: string, arrival: string) {
-    console.log(departure, arrival);
+  search(departure: string, arrival: string, type: string) {
+    let optimal, param;
 
-    const route = {};
-    const visited = {};
-    route[departure] = {
-      val: 0,
-      deals: []
-    };
-
-    let from = departure;
-    while (from !== arrival) {
-      console.log(from);
-
-      visited[from] = true;
-
-      for (const to of Object.keys(this.baseMap[from])) {
-        const minDeal = this.baseMap[from][to].reduce((acc, curr) => {
-          return (acc.cost < curr.cost ? acc : curr);
-        }, {cost: 0});
-
-        const val = route[from].val + minDeal.cost;
-        const deals = [...route[from].deals, minDeal];
-
-        console.log(val, deals);
-
-        if (!route[to] || route[to].val > val) {
-          route[to] = {
-            val,
-            deals
-          };
-        }
-      }
-
-      let minVal = Infinity;
-      for (const city of Object.keys(route)) {
-        if (!visited[city] && route[city].val < minVal) {
-          minVal = route[city].val;
-          from = city;
-        }
-      }
+    if (type === CHEAPEST) {
+      optimal = this.cheapest;
+      param = COST;
+    } else if (type === FASTEST) {
+      optimal = this.fastest;
+      param = DURATION;
     }
 
-    return route[arrival];
+    console.log(departure, arrival, type);
+    console.log(optimal, param);
+
+    return new Promise((resolve, reject) => {
+      if (optimal[departure] && optimal[departure][arrival]) {
+        return resolve(optimal[departure][arrival]);
+      }
+
+      const route = {};
+      const visited = {};
+      route[departure] = { val: 0, deals: [] };
+
+      let from = departure;
+      visited[from] = true;
+      while (from !== arrival) {
+        for (const to of Object.keys(this.baseMap[from])) {
+          if (visited[to]) { continue; }
+
+          const minDeal = this.baseMap[from][to].reduce((acc, curr) => {
+            return (acc[param] < curr[param] ? acc : curr);
+          }, { [param]: Infinity });
+
+          const val = route[from].val + minDeal[param];
+          const deals = [...route[from].deals, minDeal];
+
+          if (!route[to] || route[to].val > val) {
+            route[to] = { val, deals };
+          }
+        }
+
+        let minVal = Infinity;
+        for (const city of Object.keys(route)) {
+          if (!visited[city] && route[city].val < minVal) {
+            minVal = route[city].val;
+            from = city;
+          }
+        }
+
+        visited[from] = true;
+      }
+
+      this.cacheRoutes(optimal, departure, route, Object.keys(route).filter(to => visited[to] && route[to].val > 0));
+      return resolve(route[arrival]);
+    });
   }
 
-  handleError(error: Response) {
+  private cacheRoutes(optimal, from, route, cities) {
+    for (const to of cities) {
+      if (!optimal[from]) {
+        optimal[from] = {};
+      }
+      optimal[from][to] = route[to];
+    }
+  }
+
+  private handleError(error: Response) {
     const msg = `Error status code ${error.status} at ${error.url}`;
     console.error(msg);
   }

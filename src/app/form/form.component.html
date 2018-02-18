@@ -16,8 +16,8 @@
         </select>
 
         <div class="pure-button-group" role="group">
-          <button type="button" class="pure-button pure-button-active">Cheapest</button>
-          <button type="button" class="pure-button">Fastest</button>
+          <button type="button" class="pure-button pure-button-active" (click)="setType(cheapest)">Cheapest</button>
+          <button type="button" class="pure-button" (click)="setType(fastest)">Fastest</button>
         </div>
 
         <button type="submit" class="pure-button">Search</button>

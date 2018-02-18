@@ -2,6 +2,7 @@ import {Component, OnInit} from '@angular/core';
 import {NgForm} from '@angular/forms';
 
 import {FormService} from './form.service';
+import {CHEAPEST, FASTEST} from './form.constants';
 
 @Component({
   moduleId: module.id,
@@ -18,11 +19,16 @@ export class FormComponent implements OnInit {
   arrivals: Set<String>;
   departure: string;
   arrival: string;
-  type: number;
+  cheapest: string;
+  fastest: string;
+  type: string;
   isSubmitting: boolean;
 
   ngOnInit() {
     this.isSubmitting = false;
+    this.cheapest = CHEAPEST;
+    this.fastest = FASTEST;
+    this.type = CHEAPEST;
     this.formService.getCities()
       .then(response => {
         this.departures = response.depatures;
@@ -36,7 +42,17 @@ export class FormComponent implements OnInit {
     if (this.isSubmitting) { return; }
     if (!this.departure || !this.arrival) { return; }
 
+    console.log(this.departure, this.arrival, this.type);
+
     this.isSubmitting = true;
-    console.log(this.formService.search(this.departure, this.arrival));
+    this.formService.search(this.departure, this.arrival, this.type)
+      .then(response => {
+        console.log(response);
+        this.isSubmitting = false;
+      });
+  }
+
+  setType(type) {
+    this.type = type;
   }
 }
