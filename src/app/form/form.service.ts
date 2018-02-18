@@ -109,7 +109,7 @@ export class FormService {
 
       let from = departure;
       visited[from] = true;
-      while (from !== arrival) {
+      while (!visited[arrival]) {
         for (const to of Object.keys(this.baseMap[from])) {
           if (visited[to]) { continue; }
 
@@ -136,7 +136,8 @@ export class FormService {
         visited[from] = true;
       }
 
-      this.cacheRoutes(optimal, departure, route, Object.keys(route).filter(to => visited[to] && route[to].val > 0));
+      const citiesToCache = Object.keys(route).filter(to => visited[to] && route[to].val > 0);
+      this.cacheRoutes(optimal, departure, route, citiesToCache);
       return resolve(route[arrival].deals);
     });
   }
