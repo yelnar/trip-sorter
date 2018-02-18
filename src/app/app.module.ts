@@ -3,7 +3,6 @@ import {NgModule} from '@angular/core';
 import {HttpModule} from '@angular/http';
 
 import {FormModule} from './form/form.module';
-import {WidgetModule} from './widget/widget.module';
 
 import {FormService} from './form/form.service';
 
@@ -16,8 +15,7 @@ import {AppComponent} from './app.component';
   imports: [
     BrowserModule,
     HttpModule,
-    FormModule,
-    WidgetModule
+    FormModule
   ],
   providers: [FormService],
   bootstrap: [AppComponent]

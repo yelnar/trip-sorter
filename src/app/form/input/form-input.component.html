@@ -1,0 +1,27 @@
+<form class="pure-form pure-form-stacked"
+      name="ts-form" (submit)="search($event)">
+  <fieldset>
+    <select name="departure" id="departure" class="ts-form-select" [(ngModel)]="departure">
+      <option [ngValue]="null">From</option>
+      <option *ngFor="let departure of departures">{{departure}}</option>
+    </select>
+
+    <select name="arrival" id="arrival" class="ts-form-select" [(ngModel)]="arrival">
+      <option [ngValue]="null">To</option>
+      <option *ngFor="let arrival of arrivals">{{arrival}}</option>
+    </select>
+
+    <div class="pure-button-group" role="group">
+      <button type="button" class="pure-button ts-form-radio-btn"
+              [ngClass]="{'ts-form-radio-btn-active': type === cheapest}"
+              (click)="setType(cheapest)">Cheapest</button>
+      <button type="button" class="pure-button ts-form-radio-btn"
+              [ngClass]="{'ts-form-radio-btn-active': type === fastest}"
+              (click)="setType(fastest)">Fastest</button>
+    </div>
+
+    <button type="submit" class="pure-button ts-form-submit-btn"
+            [disabled]="!arrival || !departure || departure === arrival">
+      <img src="../../../assets/images/search.svg"> Search</button>
+  </fieldset>
+</form>

@@ -1,8 +1,7 @@
-import {Component, OnInit} from '@angular/core';
-import {NgForm} from '@angular/forms';
-
-import {FormService} from './form.service';
-import {CHEAPEST, FASTEST} from './form.constants';
+import {Component, OnInit, ViewChild} from '@angular/core';
+import {COST, DURATION} from './form.constants';
+import {Deal} from './models';
+import {FormInputComponent} from './input/form-input.component';
 
 @Component({
   moduleId: module.id,
@@ -12,47 +11,42 @@ import {CHEAPEST, FASTEST} from './form.constants';
 })
 
 export class FormComponent implements OnInit {
-  constructor(private formService: FormService) {
-  }
+  @ViewChild(FormInputComponent) formInputComponent: FormInputComponent;
 
-  departures: Set<String>;
-  arrivals: Set<String>;
-  departure: string;
-  arrival: string;
-  cheapest: string;
-  fastest: string;
-  type: string;
-  isSubmitting: boolean;
+  deals: Deal[];
+  total: object;
+
+  constructor() {
+  }
 
   ngOnInit() {
-    this.isSubmitting = false;
-    this.cheapest = CHEAPEST;
-    this.fastest = FASTEST;
-    this.type = CHEAPEST;
-    this.formService.getCities()
-      .then(response => {
-        this.departures = response.depatures;
-        this.arrivals = response.arrivals;
-      });
+    this.total = {} ;
   }
 
-  search(event) {
-    event.preventDefault();
-
-    if (this.isSubmitting) { return; }
-    if (!this.departure || !this.arrival) { return; }
-
-    console.log(this.departure, this.arrival, this.type);
-
-    this.isSubmitting = true;
-    this.formService.search(this.departure, this.arrival, this.type)
-      .then(response => {
-        console.log(response);
-        this.isSubmitting = false;
-      });
+  setDeals(deals: Deal[]) {
+    this.deals = deals;
+    this.total[COST] = deals.reduce((acc, curr) => {
+      return acc + curr[COST];
+    }, 0);
+    this.total[DURATION] = this.parseDuration(
+      deals.reduce((acc, curr) => {
+        return acc + curr[DURATION];
+      }, 0)
+    );
   }
 
-  setType(type) {
-    this.type = type;
+  private parseDuration(d: number): string {
+    const h = this.twoDigits(Math.floor(d / 60));
+    const m = this.twoDigits(d % 60);
+    return h + 'h' + m;
+  }
+
+  private twoDigits(n: number): string {
+    return ('0' + n).slice(-2);
+  }
+
+  resetDeals() {
+    this.deals = null;
+    this.formInputComponent.resetForm();
   }
 }

@@ -6,7 +6,7 @@ import 'rxjs/add/operator/map';
 import 'rxjs/add/operator/catch';
 
 import {CHEAPEST, FASTEST, COST, DURATION, DEALS_URL} from './form.constants';
-import {Deal, Duration} from '../models';
+import {Deal, Duration} from './models';
 
 @Injectable()
 export class FormService {
@@ -96,7 +96,7 @@ export class FormService {
 
     return new Promise((resolve, reject) => {
       if (optimal[departure] && optimal[departure][arrival]) {
-        return resolve(optimal[departure][arrival]);
+        return resolve(optimal[departure][arrival].deals);
       }
 
       const route = {};
@@ -133,7 +133,7 @@ export class FormService {
       }
 
       this.cacheRoutes(optimal, departure, route, Object.keys(route).filter(to => visited[to] && route[to].val > 0));
-      return resolve(route[arrival]);
+      return resolve(route[arrival].deals);
     });
   }
 

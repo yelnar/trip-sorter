@@ -1,0 +1,17 @@
+<div class="ts-form-route-holder">
+  <div class="ts-form-route-header">
+    <p>
+      <strong>{{deal.departure}} <span class="ts-form-route-arrow"><img src="../../../../assets/images/arrow.svg"></span> {{deal.arrival}}</strong>
+      <!--❯-->
+      <strong class="ts-form-route-price">{{deal._cost}}&euro;</strong>
+    </p>
+  </div>
+  <div class="ts-form-route-info">
+    <p>
+      <em>
+        <strong>{{deal.transport}}</strong>
+        {{deal.reference}} for {{deal.duration.h + 'h' + deal.duration.m}}
+      </em>
+    </p>
+  </div>
+</div>

@@ -1,0 +1,36 @@
+.ts-form-select {
+  width: 100%;
+  border-radius: 0px;
+  margin: 0.75em 0;
+}
+
+.ts-form-radio-btn {
+  width: 50%;
+  height: 2.25em;
+  color: #000;
+  background: #f3f3f3;
+}
+
+.ts-form-radio-btn:not(:first-of-type) {
+  border-left: none;
+}
+
+.ts-form-radio-btn-active {
+  background: #95bcf2;
+  box-shadow: 0 0 0 1px rgba(0,0,0,.15) inset, 0 0 6px rgba(0,0,0,.2) inset;
+}
+
+.ts-form-submit-btn {
+  width: 100%;
+  height: 2.25em;
+  margin: 0.75em 0;
+  color: #fff;
+  background-color: #009e0f;
+  font-weight: 600;
+  font-size: 1.2em;
+}
+
+.ts-form-submit-btn img {
+  width: 16px;
+  vertical-align: middle;
+}

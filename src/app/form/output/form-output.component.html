@@ -1,0 +1,15 @@
+<ts-form-output-route *ngFor="let deal of deals" [deal]="deal"></ts-form-output-route>
+<div class="ts-form-route-total">
+  <span>
+    <strong>Total</strong>
+  </span>
+  <span>
+    {{total[duration]}}
+  </span>
+  <span>
+    <strong>{{total[cost]}}&euro;</strong>
+  </span>
+</div>
+<button type="button" (click)="reset()"
+        class="pure-button ts-form-reset-btn">
+  <img src="../../../assets/images/reset.svg"> Reset</button>

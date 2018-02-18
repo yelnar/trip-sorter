@@ -1,0 +1,14 @@
+* {
+  font-family: 'Patrick Hand', cursive;
+}
+
+.ts-form-holder {
+  padding: 10px;
+  justify-content: center;
+  -ms-flex-pack: center;
+  -webkit-justify-content: center;
+}
+
+.ts-form-legend {
+  margin: 0;
+}

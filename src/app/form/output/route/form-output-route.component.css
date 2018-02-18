@@ -1,0 +1,42 @@
+.ts-form-route-holder {
+  width: 100%;
+  background-color: #eee;
+  margin: 0.75em 0;
+}
+
+.ts-form-route-header {
+  display: inline-block;
+  width: 100%;
+}
+
+.ts-form-route-header > p {
+  padding: 0 10px;
+  margin-top: 16px;
+  margin-bottom: 8px;
+}
+
+.ts-form-route-price {
+  float: right;
+}
+
+.ts-form-route-info {
+  display: inline-block;
+  width: 100%;
+}
+
+.ts-form-route-info > p {
+  padding: 0 10px;
+  margin-top: 0;
+  margin-bottom: 7px;
+}
+
+.ts-form-route-arrow {
+  background-color: #fff;
+  padding: 4px;
+  border-radius: 8px;
+  /*font-size: 0.8em;*/
+}
+
+.ts-form-route-arrow img {
+  width: 10px;
+}
